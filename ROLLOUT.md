@@ -31,7 +31,7 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 
 ## Tier 1 — centralized boundary already exists (small: add coercion + verify requireds)
 
-- [ ] **account-service** (`src/common/config/env.ts`, zod) — model repo. Add `parseEnv`, **delete its 2 ad-hoc `z.preprocess('' → undefined)` wrappers** (PAS_STRIPE_API_BASE_URL, PAS_PUBLIC_BASE_URL). Keep `assertStartupAuthConfig` (already empty-safe). Also: add the 6 staging keys blank per the earlier env-consistency pass.
+- [x] **account-service** (`src/common/config/env.ts`, zod) — model repo. **Reference adoption PR: penster-ai/account-service.penser.ai#73.** `getEnv` → `parseEnv`, both `z.preprocess` wrappers deleted, `assertStartupAuthConfig` kept. Also fixed a latent boot crash (every other `.url().optional()` var threw on empty). _Still TODO in a follow-up: add the 6 staging keys blank per the earlier env-consistency pass._
 - [ ] **notifications** (`src/common/config/env.ts`, zod) — cleanest; 0 ad-hoc hacks, 4 `process.env` users. Straight swap to `parseEnv`.
 - [ ] **magnet** (`src/asset_intel/config.py`, pydantic) — subclass `PensterBaseSettings`; no raw `os.getenv` to sweep.
 - [ ] **x-adgen** (`adgen/settings.py`, pydantic 2.14) — subclass `PensterBaseSettings`; 1 raw getenv file to fold in.
