@@ -11,8 +11,10 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 
 ## Phase A — publish the libraries
 
-- [ ] Decide distribution: private npm registry vs. git/workspace link for `@penster/env`; PyPI-internal vs. `pip install -e`/git for `penster-env`.
-- [ ] Tag `@penster/env@0.1.0` and `penster-env 0.1.0`.
+- [x] Distribution decided: **git install, no registry infra** (uses the git auth repos already have).
+  - TS: `npm i github:penster-ai/penster-env#v0.1.0` (+ `zod` peer).
+  - PY: `pip install "penster-env @ git+https://github.com/penster-ai/penster-env.git@v0.1.0#subdirectory=py"`.
+- [ ] Tag `v0.1.0` and cut a GitHub release.
 - [ ] Add both to the Phase 2 "service platform contract" section of the hardening roadmap.
 
 ## Per-repo adoption recipe (same every time)

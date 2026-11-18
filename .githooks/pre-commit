@@ -6,16 +6,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 fail=0
 
-# --- TypeScript (@penster/env) ---
-if command -v npm >/dev/null 2>&1 && [ -d "$ROOT/ts/node_modules" ]; then
+# --- TypeScript (@penster/env, at repo root) ---
+if command -v npm >/dev/null 2>&1 && [ -d "$ROOT/node_modules" ]; then
   echo "[pre-commit] ts: typecheck + test + build"
-  ( cd "$ROOT/ts" && npm run -s typecheck && npm run -s test && npm run -s build ) || fail=1
-  git -C "$ROOT" add ts/dist 2>/dev/null || true
+  ( cd "$ROOT" && npm run -s typecheck && npm run -s test && npm run -s build ) || fail=1
+  git -C "$ROOT" add dist 2>/dev/null || true
 else
-  echo "[pre-commit] ts: skipped (run 'cd ts && npm install' to enable)"
+  echo "[pre-commit] ts: skipped (run 'npm install' at repo root to enable)"
 fi
 
-# --- Python (penster-env) ---
+# --- Python (penster-env, in py/) ---
 PY="${PENSTER_ENV_PYTHON:-python3}"
 if command -v "$PY" >/dev/null 2>&1 && "$PY" -c "import pytest, pydantic_settings" >/dev/null 2>&1; then
   echo "[pre-commit] py: pytest"

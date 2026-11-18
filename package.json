@@ -4,6 +4,10 @@
   "description": "Penster's single env-parsing boundary: empty string ≡ unset, required enforced by schema.",
   "license": "UNLICENSED",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/penster-ai/penster-env.git"
+  },
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

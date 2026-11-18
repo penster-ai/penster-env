@@ -1,6 +1,5 @@
 # node
 node_modules/
-ts/node_modules/
 *.log
 .npm/
 
@@ -19,4 +18,4 @@ py/dist/
 .idea/
 .vscode/
 
-# NOTE: ts/dist IS committed (prebuilt lib output) — do not ignore it.
+# NOTE: ./dist IS committed (prebuilt @penster/env output) — do not ignore it.

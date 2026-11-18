@@ -6,9 +6,21 @@ for the why, [ROLLOUT.md](./ROLLOUT.md) for the per-repo adoption plan.
 
 ```
 penster-env/
-├── ts/   @penster/env      (TypeScript / Node — zod)
-└── py/   penster-env        (Python — pydantic-settings 2.1+)
+├── (root)  @penster/env     (TypeScript / Node — zod)
+└── py/      penster-env       (Python — pydantic-settings 2.1+)
 ```
+
+## Install (zero registry infra — uses the git auth repos already have)
+
+```bash
+# TypeScript
+npm i github:penster-ai/penster-env            # + zod (peer)
+# Python
+pip install "penster-env @ git+https://github.com/penster-ai/penster-env.git#subdirectory=py"
+```
+
+Pin to a tag for reproducibility, e.g. `github:penster-ai/penster-env#v0.1.0`
+and `...penster-env.git@v0.1.0#subdirectory=py`.
 
 Verified against pydantic-settings 2.1.0, 2.14.2, 2.16.1 and zod 3.24.
 
@@ -72,8 +84,8 @@ Install: `pip install penster-env` (or `pip install -e utils/penster-env/py`).
 ## Develop
 
 ```bash
-# TS
-cd ts && npm install && npm run typecheck && npm test && npm run build
+# TS (repo root)
+npm install && npm run typecheck && npm test && npm run build
 # PY
 cd py && pip install -e '.[dev]' && pytest
 ```
