@@ -32,15 +32,15 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 ## Tier 1 — centralized boundary already exists (small: add coercion + verify requireds)
 
 - [x] **account-service** (`src/common/config/env.ts`, zod) — model repo. **Reference adoption PR: penster-ai/account-service.penser.ai#73.** `getEnv` → `parseEnv`, both `z.preprocess` wrappers deleted, `assertStartupAuthConfig` kept. Also fixed a latent boot crash (every other `.url().optional()` var threw on empty). _Still TODO in a follow-up: add the 6 staging keys blank per the earlier env-consistency pass._
-- [ ] **notifications** (`src/common/config/env.ts`, zod) — cleanest; 0 ad-hoc hacks, 4 `process.env` users. Straight swap to `parseEnv`.
-- [ ] **magnet** (`src/asset_intel/config.py`, pydantic) — subclass `PensterBaseSettings`; no raw `os.getenv` to sweep.
-- [ ] **x-adgen** (`adgen/settings.py`, pydantic 2.14) — subclass `PensterBaseSettings`; 1 raw getenv file to fold in.
-- [ ] **marketing.crm** (`src/infrastructure/environment.ts`) — verify it's the sole boundary, route through `parseEnv`, confirm requireds are non-optional.
+- [x] **notifications** (`src/common/config/env.ts`, zod) — **PR penster-ai/notifications.penster.ai#5.** `getEnv` → `parseEnv`. Verified: blank optional/url vars boot clean.
+- [x] **x-adgen** → repo is **penster-ai/adgen.penster.ai#7** (dir name ≠ repo name). `Settings` subclasses `PensterBaseSettings`. Verified in-venv: blank env honors defaults.
+- [ ] **magnet** (`src/asset_intel/config.py`, pydantic) — ⚠ **BLOCKED: local remote is `bnPenster/magnet.penster.ai` (personal fork), not the org repo.** Confirm the canonical repo before PR.
+- [ ] **marketing.crm** (`src/infrastructure/environment.ts`) — ⚠ **BLOCKED: no `origin` remote configured locally.** Add the org remote, then adopt.
 
 ## Tier 2 — central boundary exists but leaks raw reads (medium: adopt + sweep stragglers)
 
-- [ ] **prompt-mesh** (`src/config/settings.py`, pydantic 2.1.0) — subclass `PensterBaseSettings` **and** migrate 14 raw `os.getenv` across 8 files to `getenv`/`require`; drop ~143 ad-hoc empty checks as they're superseded.
-- [ ] **paid-media-agent** (`src/paid_media_agent/config.py`, pydantic 2.16) — subclass base + migrate 15 raw `os.getenv` across 9 files.
+- [x] **prompt-mesh** (`src/config/settings.py`, pydantic **2.1.0**) — **PR penster-ai/prompt-mesh.penster.ai#72** (pydantic Settings boundary). Verified in-venv on 2.1.0: blank → default. _Follow-up PR: migrate ~14 raw `os.getenv` across 8 files to `getenv`/`require`._
+- [ ] **paid-media-agent** — ⚠ **BLOCKED: local remote is `langchain-ai/paid-media-agent` (template fork), not an org repo.** Confirm canonical repo before PR. Then subclass base + migrate 15 raw `os.getenv`.
 
 ## Tier 3 — NO central boundary (large: build the boundary first, then migrate — one ticket each)
 
