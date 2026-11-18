@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ts:
+    name: "@penster/env (node)"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: ts/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: fail if dist is stale
+        run: git diff --exit-code -- dist || (echo "dist/ out of date — run 'npm run build' and commit" && exit 1)
+
+  py:
+    name: "penster-env (python)"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: py
+    strategy:
+      fail-fast: false
+      matrix:
+        # Lock the whole supported range: 2.1.0 (no env_ignore_empty) .. latest.
+        pydantic-settings: ["2.1.0", "2.16.1", "latest"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: install
+        run: |
+          python -m pip install --upgrade pip
+          if [ "${{ matrix.pydantic-settings }}" = "latest" ]; then
+            pip install "pydantic-settings" pytest
+          else
+            pip install "pydantic-settings==${{ matrix.pydantic-settings }}" pytest
+          fi
+      - run: pytest -q
