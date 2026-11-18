@@ -1,5 +1,5 @@
 /**
- * @penster/env — the one env-parsing boundary every Penster TS service uses.
+ * @penster-ai/env — the one env-parsing boundary every Penster TS service uses.
  *
  * The single invariant (see ../SPEC.md):
  *   empty string ≡ unset.

@@ -19,7 +19,7 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 
 ## Per-repo adoption recipe (same every time)
 
-1. Add the dep (`@penster/env` + `zod`, or `penster-env`).
+1. Add the dep (`@penster-ai/env` + `zod`, or `penster-env`).
 2. Route **all** env reads through the one boundary: `parseEnv(schema)` /
    `PensterBaseSettings`. Replace scattered `process.env.X` / `os.getenv("X")`.
 3. Delete any ad-hoc empty-string handling (`v === '' ? undefined`, `.strip() or None`, etc.).

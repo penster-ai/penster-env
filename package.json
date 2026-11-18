@@ -1,6 +1,9 @@
 {
-  "name": "@penster/env",
-  "version": "0.1.0",
+  "name": "@penster-ai/env",
+  "version": "0.1.1",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "description": "Penster's single env-parsing boundary: empty string ≡ unset, required enforced by schema.",
   "license": "UNLICENSED",
   "private": false,

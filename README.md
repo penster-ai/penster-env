@@ -6,31 +6,40 @@ for the why, [ROLLOUT.md](./ROLLOUT.md) for the per-repo adoption plan.
 
 ```
 penster-env/
-├── (root)  @penster/env     (TypeScript / Node — zod)
+├── (root)  @penster-ai/env     (TypeScript / Node — zod)
 └── py/      penster-env       (Python — pydantic-settings 2.1+)
 ```
 
-## Install (zero registry infra — uses the git auth repos already have)
+## Install
+
+This repo is **public**, which makes the git-dependency installs below
+**token-free** in every service, CI, and Docker build — the recommended path.
+The TS package is **also published to GitHub Packages** (`@penster-ai/env`,
+matching the org's `@penster-ai/*` registry); note that GitHub Packages npm
+requires an auth token to install *even for public packages*, so prefer the
+git-dep unless a repo already has the `@penster-ai` `.npmrc` + `GH_PKG_TOKEN`
+(feedgen does).
 
 ```bash
-# TypeScript
-npm i github:penster-ai/penster-env            # + zod (peer)
-# Python
-pip install "penster-env @ git+https://github.com/penster-ai/penster-env.git#subdirectory=py"
+# TypeScript — token-free (recommended)
+npm i "@penster-ai/env@github:penster-ai/penster-env#v0.1.1"   # + zod (peer)
+# TypeScript — via GitHub Packages (needs @penster-ai .npmrc + GH_PKG_TOKEN)
+npm i @penster-ai/env
+
+# Python — token-free (public repo, no registry)
+pip install "penster-env @ git+https://github.com/penster-ai/penster-env.git@v0.1.1#subdirectory=py"
 ```
 
-Pin to a tag for reproducibility, e.g. `github:penster-ai/penster-env#v0.1.0`
-and `...penster-env.git@v0.1.0#subdirectory=py`.
-
+Pin to a tag for reproducibility (`#v0.1.1` / `@v0.1.1`).
 Verified against pydantic-settings 2.1.0, 2.14.2, 2.16.1 and zod 3.24.
 
 ---
 
-## TypeScript — `@penster/env`
+## TypeScript — `@penster-ai/env`
 
 ```ts
 import { z } from 'zod';
-import { parseEnv, assertRequired } from '@penster/env';
+import { parseEnv, assertRequired } from '@penster-ai/env';
 
 export const env = parseEnv(
   z.object({
@@ -50,8 +59,7 @@ assertRequired(process.env, ['PAS_JWT_PRIVATE_KEY_B64', 'PAS_INTERNAL_API_KEY'])
 - `cleanEnv(source?)` — the coercion alone, if you parse elsewhere.
 - `assertRequired(env, keys)` — treats missing/empty/whitespace as absent.
 
-Install (private org registry / workspace link):
-`npm i @penster/env` + `zod` (peer).
+Install: see the Install section above (`zod` is a peer dependency).
 
 ---
 
