@@ -1,0 +1,22 @@
+# node
+node_modules/
+ts/node_modules/
+*.log
+.npm/
+
+# python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+build/
+py/dist/
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
+
+# NOTE: ts/dist IS committed (prebuilt lib output) — do not ignore it.

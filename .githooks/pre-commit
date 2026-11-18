@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# penster-env pre-commit: build + test each library when its toolchain is
+# present. Skips (does not block the commit) when a toolchain is unavailable.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+fail=0
+
+# --- TypeScript (@penster/env) ---
+if command -v npm >/dev/null 2>&1 && [ -d "$ROOT/ts/node_modules" ]; then
+  echo "[pre-commit] ts: typecheck + test + build"
+  ( cd "$ROOT/ts" && npm run -s typecheck && npm run -s test && npm run -s build ) || fail=1
+  git -C "$ROOT" add ts/dist 2>/dev/null || true
+else
+  echo "[pre-commit] ts: skipped (run 'cd ts && npm install' to enable)"
+fi
+
+# --- Python (penster-env) ---
+PY="${PENSTER_ENV_PYTHON:-python3}"
+if command -v "$PY" >/dev/null 2>&1 && "$PY" -c "import pytest, pydantic_settings" >/dev/null 2>&1; then
+  echo "[pre-commit] py: pytest"
+  ( cd "$ROOT/py" && "$PY" -m pytest -q ) || fail=1
+else
+  echo "[pre-commit] py: skipped (need pytest + pydantic-settings; set PENSTER_ENV_PYTHON to a venv python)"
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo "[pre-commit] FAILED — fix the above or commit with --no-verify to bypass." >&2
+  exit 1
+fi
+echo "[pre-commit] ok"
