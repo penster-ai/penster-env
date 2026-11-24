@@ -45,6 +45,7 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 ## Tier 3 — NO central boundary (large: build the boundary first, then migrate — one ticket each)
 
 - [x] **feedgen** — polyglot monorepo. **TS done: PR penster-ai/feedgen.penster.ai#221** (base staging). The 5 `config.ts` (video-orchestrator, video-renderer + reel-renderer, animated-reels, color-service) each already had a central zod boundary — adopted by wrapping the parse input in `cleanEnv()` (not `parseEnv`, to preserve their bespoke boot-error UX / superRefine / retired-name guards / `.default('')`+`pick()` R2 fallback). Public git-dep `@penster-ai/env`#v0.1.1 in 4 package.json + lockfile; all 4 type-check clean. **Python intentionally a no-op:** `reel-api/config.py` already enforces the invariant (`(env.get(x) or '').strip()` + `_require`); **video-workers is retiring** (per user, 2026-11-18); `vpu/document` is a vendored byte-parity mirror of video-workers (`sync_vendor.py --check`) so it can't be independently edited. No pydantic introduced (would've forced a 13 GB content-hashed base rebuild). _Follow-up (deploy-config, not code): merge `VIDEO_DEVICE_RENDERING_ENABLED=false` into the prod env file._
+- [x] **admin-dash** (`ui/admin-dash.feedgen.penster.ai`, Next 14) — **PR penster-ai/admin-dash.feedgen.penster.ai#56** (base staging). Built the boundary: `src/env.ts` (`publicEnv`, `NEXT_PUBLIC_*` spelled out literally so Next inlines them; API URLs required in prod builds → blank fails `next build` instead of baking in localhost) + `src/lib/server-env.ts` (MAGNET optional as a group → proxy 503 when blank). Verified: build ✅ with URLs, ❌ blank. _Note: `NEXT_PUBLIC_*` are build-time — preview needs them as Docker build args (staging/prod come from GitHub env vars)._
 - [ ] **webgen** — no schema lib, 29 raw `process.env`, no central file. Create `env.ts` (zod) boundary, migrate reads.
 - [ ] **crm** — zod present but used for domain schemas, not env; 16 raw `process.env` users. Create a central env boundary.
 
@@ -55,5 +56,5 @@ Tier 3 refactors (each its own ticket). Findings below come from the
 
 ## Not yet scanned (remote-only; clone + scan before scheduling)
 
-- tenantApp-pensterAi, admin-dash.feedgen, animated-reels, canvas / video-editor / video-canvas (studio set),
+- tenantApp-pensterAi, animated-reels, canvas / video-editor / video-canvas (studio set),
   fit, convert, landing, webgen-api, design-council, hpod (Go — needs a Go recipe: treat `os.Getenv("")` as unset).
